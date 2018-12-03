@@ -7,8 +7,8 @@ pipeline {
     }
 
     parameters {
-        string(name: "tomcat_dev", defaultValue: "localhost", description: 'Staging Server')
-        string(name: "tomcat_prod", defaultValue: "localhost", description: 'Prod Server')
+        string(name: "tomcat_dev", defaultValue: "/usr/local/apache-tomcat-9.0.12-staging", description: 'Staging Server')
+        string(name: "tomcat_prod", defaultValue: "/usr/local/apache-tomcat-9.0.12-prod", description: 'Prod Server')
     }
 
     triggers {
@@ -31,12 +31,12 @@ pipeline {
             parallel{
                 stage('Deploy to Staging'){
                     steps{
-                        sh "cp webapp/target/*.war dean@${params.tomcat_dev}:8090/webapp"
+                        sh "cp webapp/target/*.war ${params.tomcat_dev}/webapps"
                     }
                 }
                 stage('Deploy to Production'){
                     steps{
-                        sh "cp webapp/target/*.war dean@${params.tomcat_prod}:8091/webapp"
+                        sh "cp webapp/target/*.war ${params.tomcat_prod}/webapps"
                     }
                 }
             }
