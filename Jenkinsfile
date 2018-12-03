@@ -34,14 +34,14 @@ pipeline {
                 stage('Deploy to Staging'){
                     steps{
                         sh "curl http://tomcat:tomcat@${params.tomcat_dev}/manager/text/undeploy?path=/webapp&update=true"
-                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_dev}/manager/deploy?path=/webapp&update=true"
+                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_dev}/manager/text/deploy?path=/webapp&update=true"
                         //sh "sudo cp webapp/target/*.war ${params.tomcat_dev}/webapps"
                     }
                 }
                 stage('Deploy to Production'){
                     steps{
                         sh "curl http://tomcat:tomcat@${params.tomcat_prod}/manager/text/undeploy?path=/webapp&update=true"
-                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_prod}/manager/deploy?path=/webapp&update=true"
+                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_prod}/manager/text/deploy?path=/webapp&update=true"
                         //sh "sudo cp webapp/target/*.war ${params.tomcat_prod}/webapps"
                     }
                 }
