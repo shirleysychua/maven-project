@@ -7,8 +7,10 @@ pipeline {
     }
 
     parameters {
-        string(name: "tomcat_dev", defaultValue: "/usr/local/apache-tomcat-9.0.12-staging", description: 'Staging Server')
-        string(name: "tomcat_prod", defaultValue: "/usr/local/apache-tomcat-9.0.12-prod", description: 'Prod Server')
+        string(name: "tomcat_dev", defaultValue: "localhost:8090", description: 'Staging Server')
+        string(name: "tomcat_prod", defaultValue: "localhost:8091", description: 'Prod Server')
+        //string(name: "tomcat_dev", defaultValue: "/usr/local/apache-tomcat-9.0.12-staging", description: 'Staging Server')
+        //string(name: "tomcat_prod", defaultValue: "/usr/local/apache-tomcat-9.0.12-prod", description: 'Prod Server')
     }
 
     triggers {
@@ -31,12 +33,14 @@ pipeline {
             parallel{
                 stage('Deploy to Staging'){
                     steps{
-                        sh "sudo cp webapp/target/*.war ${params.tomcat_dev}/webapps"
+                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_dev}/webapps/manager/deploy?path=/webapp&update=true"
+                        //sh "sudo cp webapp/target/*.war ${params.tomcat_dev}/webapps"
                     }
                 }
                 stage('Deploy to Production'){
                     steps{
-                        sh "sudo cp webapp/target/*.war ${params.tomcat_prod}/webapps"
+                        sh "curl --upload-file webapp/target/*.war http://tomcat:tomcat@${params.tomcat_prod}/webapps/manager/deploy?path=/webapp&update=true"
+                        //sh "sudo cp webapp/target/*.war ${params.tomcat_prod}/webapps"
                     }
                 }
             }
