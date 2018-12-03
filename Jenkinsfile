@@ -31,12 +31,12 @@ pipeline {
             parallel{
                 stage('Deploy to Staging'){
                     steps{
-                        sh "cp webapp/target/*.war ${params.tomcat_dev}/webapps"
+                        sh "sudo cp webapp/target/*.war ${params.tomcat_dev}/webapps"
                     }
                 }
                 stage('Deploy to Production'){
                     steps{
-                        sh "cp webapp/target/*.war ${params.tomcat_prod}/webapps"
+                        sh "sudo cp webapp/target/*.war ${params.tomcat_prod}/webapps"
                     }
                 }
             }
