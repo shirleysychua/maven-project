@@ -5,6 +5,16 @@ pipeline {
         maven 'localMaven'
         jdk 'localJDK'
     }
+
+    parameters {
+        string(name: "tomcat_dev", defaultValue: "localhost:8090", description: 'Staging Server')
+        string(name: "tomcat_prod", defaultValue: "localhost:8091", description: 'Prod Server')
+    }
+
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     stages {
         stage('Build'){
             steps {
@@ -17,7 +27,21 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Staging') {
+        stage('Deployments'){
+            parallel{
+                stage('Deploy to Staging'){
+                    steps{
+                        sh "cp webapp/target/*.war ${tomcat_dev}/webapp"
+                    }
+                }
+                stage('Deploy to Production'){
+                    steps{
+                        sh "cp webapp/target/*.war ${tomcat_prod}/webapp"
+                    }
+                }
+            }
+        }
+        /*stage('Deploy to Staging') {
             steps {
                 build job: 'deploy-to-staging'
             }
@@ -38,6 +62,6 @@ pipeline {
                     echo 'Deployment failed'
                 }
             }
-        }
+        }*/
     }
 }
